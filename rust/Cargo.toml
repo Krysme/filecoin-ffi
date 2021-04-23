@@ -57,7 +57,7 @@ blst-portable = ["bls-signatures/blst-portable", "blstrs/portable"]
 
 
 [patch.crates-io]
-bellperson = { path = "https://github.com/15012700225/my-bellman.git" }
-neptune = { path = "https://github.com/15012700225/my-neptune" }
+bellperson = { git = "https://github.com/15012700225/my-bellman.git" }
+neptune = { git = "https://github.com/15012700225/my-neptune" }
 phase21 = { git = "https://github.com/Krysme/phase2" }
 
