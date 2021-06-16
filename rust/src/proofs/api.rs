@@ -4,9 +4,11 @@ use ffi_toolkit::{
 use filecoin_proofs_api::seal::{
     add_piece, aggregate_seal_commit_proofs, clear_cache, compute_comm_d, fauxrep, fauxrep2,
     generate_piece_commitment, get_seal_inputs, seal_commit_phase1, seal_commit_phase2,
-    seal_pre_commit_phase1, seal_pre_commit_phase2, verify_aggregate_seal_commit_proofs,
-    verify_seal, write_and_preprocess, SealCommitPhase2Output, SealPreCommitPhase2Output,
+    seal_pre_commit_phase1, seal_pre_commit_phase1_layer, seal_pre_commit_phase1_tree,
+    seal_pre_commit_phase2, verify_aggregate_seal_commit_proofs, verify_seal, write_and_preprocess,
+    SealCommitPhase2Output, SealPreCommitPhase2Output,
 };
+
 use filecoin_proofs_api::{
     PieceInfo, PrivateReplicaInfo, RegisteredPoStProof, RegisteredSealProof, SectorId,
     StorageProofsError, UnpaddedByteIndex, UnpaddedBytesAmount,
@@ -188,6 +190,114 @@ pub unsafe extern "C" fn fil_fauxrep2(
         }
 
         info!("fauxrep2: finish");
+
+        raw_ptr(response)
+    })
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn fil_seal_pre_commit_phase1_tree(
+    registered_proof: fil_RegisteredSealProof,
+    cache_dir_path: *const libc::c_char,
+    staged_sector_path: *const libc::c_char,
+    sealed_sector_path: *const libc::c_char,
+    sector_id: u64,
+    prover_id: fil_32ByteArray,
+    ticket: fil_32ByteArray,
+    pieces_ptr: *const fil_PublicPieceInfo,
+    pieces_len: libc::size_t,
+) -> *mut fil_SealPreCommitPhase1Response {
+    catch_panic_response(|| {
+        init_log();
+
+        info!("seal_pre_commit_phase1_tree: start");
+
+        let slice: &[fil_PublicPieceInfo] = std::slice::from_raw_parts(pieces_ptr, pieces_len);
+        let public_pieces: Vec<PieceInfo> =
+            slice.to_vec().iter().cloned().map(Into::into).collect();
+
+        let mut response: fil_SealPreCommitPhase1Response = Default::default();
+
+        let result = seal_pre_commit_phase1_tree(
+            registered_proof.into(),
+            c_str_to_pbuf(cache_dir_path),
+            c_str_to_pbuf(staged_sector_path),
+            c_str_to_pbuf(sealed_sector_path),
+            prover_id.inner,
+            SectorId::from(sector_id),
+            ticket.inner,
+            &public_pieces,
+        )
+        .and_then(|output| serde_json::to_vec(&output).map_err(Into::into));
+
+        match result {
+            Ok(output) => {
+                response.status_code = FCPResponseStatus::FCPNoError;
+                response.seal_pre_commit_phase1_output_ptr = output.as_ptr();
+                response.seal_pre_commit_phase1_output_len = output.len();
+                mem::forget(output);
+            }
+            Err(err) => {
+                response.status_code = FCPResponseStatus::FCPUnclassifiedError;
+                response.error_msg = rust_str_to_c_str(format!("{:?}", err));
+            }
+        }
+
+        info!("seal_pre_commit_phase1: finish");
+
+        raw_ptr(response)
+    })
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn fil_seal_pre_commit_phase1_layer(
+    registered_proof: fil_RegisteredSealProof,
+    cache_dir_path: *const libc::c_char,
+    staged_sector_path: *const libc::c_char,
+    sealed_sector_path: *const libc::c_char,
+    sector_id: u64,
+    prover_id: fil_32ByteArray,
+    ticket: fil_32ByteArray,
+    pieces_ptr: *const fil_PublicPieceInfo,
+    pieces_len: libc::size_t,
+) -> *mut fil_SealPreCommitPhase1Response {
+    catch_panic_response(|| {
+        init_log();
+
+        info!("seal_pre_commit_phase1_tree: start");
+
+        let slice: &[fil_PublicPieceInfo] = std::slice::from_raw_parts(pieces_ptr, pieces_len);
+        let public_pieces: Vec<PieceInfo> =
+            slice.to_vec().iter().cloned().map(Into::into).collect();
+
+        let mut response: fil_SealPreCommitPhase1Response = Default::default();
+
+        let result = seal_pre_commit_phase1_layer(
+            registered_proof.into(),
+            c_str_to_pbuf(cache_dir_path),
+            c_str_to_pbuf(staged_sector_path),
+            c_str_to_pbuf(sealed_sector_path),
+            prover_id.inner,
+            SectorId::from(sector_id),
+            ticket.inner,
+            &public_pieces,
+        )
+        .and_then(|output| serde_json::to_vec(&output).map_err(Into::into));
+
+        match result {
+            Ok(output) => {
+                response.status_code = FCPResponseStatus::FCPNoError;
+                response.seal_pre_commit_phase1_output_ptr = output.as_ptr();
+                response.seal_pre_commit_phase1_output_len = output.len();
+                mem::forget(output);
+            }
+            Err(err) => {
+                response.status_code = FCPResponseStatus::FCPUnclassifiedError;
+                response.error_msg = rust_str_to_c_str(format!("{:?}", err));
+            }
+        }
+
+        info!("seal_pre_commit_phase1: finish");
 
         raw_ptr(response)
     })
