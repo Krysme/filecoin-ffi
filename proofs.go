@@ -1158,3 +1158,84 @@ func toVanillaProofs(src [][]byte) ([]generated.FilVanillaProof, func()) {
 		}
 	}
 }
+// SealPreCommitPhase1
+func SealPreCommitPhase1Tree(
+	proofType abi.RegisteredSealProof,
+	cacheDirPath string,
+	stagedSectorPath string,
+	sealedSectorPath string,
+	sectorNum abi.SectorNumber,
+	minerID abi.ActorID,
+	ticket abi.SealRandomness,
+	pieces []abi.PieceInfo,
+) (phase1Output []byte, err error) {
+
+	sp, err := toFilRegisteredSealProof(proofType)
+	if err != nil {
+		return nil, err
+	}
+
+	proverID, err := toProverID(minerID)
+	if err != nil {
+		return nil, err
+	}
+
+	filPublicPieceInfos, filPublicPieceInfosLen, err := toFilPublicPieceInfos(pieces)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := generated.FilSealPreCommitPhase1Tree(sp, cacheDirPath, stagedSectorPath, sealedSectorPath, uint64(sectorNum), proverID, to32ByteArray(ticket), filPublicPieceInfos, filPublicPieceInfosLen)
+	resp.Deref()
+
+	defer generated.FilDestroySealPreCommitPhase1Response(resp)
+
+	if resp.StatusCode != generated.FCPResponseStatusFCPNoError {
+		return nil, errors.New(generated.RawString(resp.ErrorMsg).Copy())
+	}
+
+	return copyBytes(resp.SealPreCommitPhase1OutputPtr, resp.SealPreCommitPhase1OutputLen), nil
+
+	//return []byte(toGoStringCopy(resp.SealPreCommitPhase1OutputPtr, resp.SealPreCommitPhase1OutputLen)), nil
+}
+
+
+// SealPreCommitPhase1
+func SealPreCommitPhase1Layer(
+	proofType abi.RegisteredSealProof,
+	cacheDirPath string,
+	stagedSectorPath string,
+	sealedSectorPath string,
+	sectorNum abi.SectorNumber,
+	minerID abi.ActorID,
+	ticket abi.SealRandomness,
+	pieces []abi.PieceInfo,
+) (phase1Output []byte, err error) {
+
+	sp, err := toFilRegisteredSealProof(proofType)
+	if err != nil {
+		return nil, err
+	}
+
+	proverID, err := toProverID(minerID)
+	if err != nil {
+		return nil, err
+	}
+
+	filPublicPieceInfos, filPublicPieceInfosLen, err := toFilPublicPieceInfos(pieces)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := generated.FilSealPreCommitPhase1Layer(sp, cacheDirPath, stagedSectorPath, sealedSectorPath, uint64(sectorNum), proverID, to32ByteArray(ticket), filPublicPieceInfos, filPublicPieceInfosLen)
+	resp.Deref()
+
+	defer generated.FilDestroySealPreCommitPhase1Response(resp)
+
+	if resp.StatusCode != generated.FCPResponseStatusFCPNoError {
+		return nil, errors.New(generated.RawString(resp.ErrorMsg).Copy())
+	}
+
+	return copyBytes(resp.SealPreCommitPhase1OutputPtr, resp.SealPreCommitPhase1OutputLen), nil
+
+}

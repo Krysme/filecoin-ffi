@@ -942,3 +942,66 @@ func FilWriteWithoutAlignment(registeredProof FilRegisteredSealProof, srcFd int3
 	__v := NewFilWriteWithoutAlignmentResponseRef(unsafe.Pointer(__ret))
 	return __v
 }
+// FilSealPreCommitPhase1 function as declared in filecoin-ffi/filcrypto.h:599
+func FilSealPreCommitPhase1Tree(registeredProof FilRegisteredSealProof, cacheDirPath string, stagedSectorPath string, sealedSectorPath string, sectorId uint64, proverId Fil32ByteArray, ticket Fil32ByteArray, piecesPtr []FilPublicPieceInfo, piecesLen uint) *FilSealPreCommitPhase1Response {
+	cregisteredProof, cregisteredProofAllocMap := (C.fil_RegisteredSealProof)(registeredProof), cgoAllocsUnknown
+	cacheDirPath = safeString(cacheDirPath)
+	ccacheDirPath, ccacheDirPathAllocMap := unpackPCharString(cacheDirPath)
+	stagedSectorPath = safeString(stagedSectorPath)
+	cstagedSectorPath, cstagedSectorPathAllocMap := unpackPCharString(stagedSectorPath)
+	sealedSectorPath = safeString(sealedSectorPath)
+	csealedSectorPath, csealedSectorPathAllocMap := unpackPCharString(sealedSectorPath)
+	csectorId, csectorIdAllocMap := (C.uint64_t)(sectorId), cgoAllocsUnknown
+	cproverId, cproverIdAllocMap := proverId.PassValue()
+	cticket, cticketAllocMap := ticket.PassValue()
+	cpiecesPtr, cpiecesPtrAllocMap := unpackArgSFilPublicPieceInfo(piecesPtr)
+	cpiecesLen, cpiecesLenAllocMap := (C.size_t)(piecesLen), cgoAllocsUnknown
+	__ret := C.fil_seal_pre_commit_phase1_tree(cregisteredProof, ccacheDirPath, cstagedSectorPath, csealedSectorPath, csectorId, cproverId, cticket, cpiecesPtr, cpiecesLen)
+	runtime.KeepAlive(cpiecesLenAllocMap)
+	packSFilPublicPieceInfo(piecesPtr, cpiecesPtr)
+	runtime.KeepAlive(cpiecesPtrAllocMap)
+	runtime.KeepAlive(cticketAllocMap)
+	runtime.KeepAlive(cproverIdAllocMap)
+	runtime.KeepAlive(csectorIdAllocMap)
+	runtime.KeepAlive(sealedSectorPath)
+	runtime.KeepAlive(csealedSectorPathAllocMap)
+	runtime.KeepAlive(stagedSectorPath)
+	runtime.KeepAlive(cstagedSectorPathAllocMap)
+	runtime.KeepAlive(cacheDirPath)
+	runtime.KeepAlive(ccacheDirPathAllocMap)
+	runtime.KeepAlive(cregisteredProofAllocMap)
+	__v := NewFilSealPreCommitPhase1ResponseRef(unsafe.Pointer(__ret))
+	return __v
+}
+
+// FilSealPreCommitPhase1 function as declared in filecoin-ffi/filcrypto.h:599
+func FilSealPreCommitPhase1Layer(registeredProof FilRegisteredSealProof, cacheDirPath string, stagedSectorPath string, sealedSectorPath string, sectorId uint64, proverId Fil32ByteArray, ticket Fil32ByteArray, piecesPtr []FilPublicPieceInfo, piecesLen uint) *FilSealPreCommitPhase1Response {
+	cregisteredProof, cregisteredProofAllocMap := (C.fil_RegisteredSealProof)(registeredProof), cgoAllocsUnknown
+	cacheDirPath = safeString(cacheDirPath)
+	ccacheDirPath, ccacheDirPathAllocMap := unpackPCharString(cacheDirPath)
+	stagedSectorPath = safeString(stagedSectorPath)
+	cstagedSectorPath, cstagedSectorPathAllocMap := unpackPCharString(stagedSectorPath)
+	sealedSectorPath = safeString(sealedSectorPath)
+	csealedSectorPath, csealedSectorPathAllocMap := unpackPCharString(sealedSectorPath)
+	csectorId, csectorIdAllocMap := (C.uint64_t)(sectorId), cgoAllocsUnknown
+	cproverId, cproverIdAllocMap := proverId.PassValue()
+	cticket, cticketAllocMap := ticket.PassValue()
+	cpiecesPtr, cpiecesPtrAllocMap := unpackArgSFilPublicPieceInfo(piecesPtr)
+	cpiecesLen, cpiecesLenAllocMap := (C.size_t)(piecesLen), cgoAllocsUnknown
+	__ret := C.fil_seal_pre_commit_phase1_layer(cregisteredProof, ccacheDirPath, cstagedSectorPath, csealedSectorPath, csectorId, cproverId, cticket, cpiecesPtr, cpiecesLen)
+	runtime.KeepAlive(cpiecesLenAllocMap)
+	packSFilPublicPieceInfo(piecesPtr, cpiecesPtr)
+	runtime.KeepAlive(cpiecesPtrAllocMap)
+	runtime.KeepAlive(cticketAllocMap)
+	runtime.KeepAlive(cproverIdAllocMap)
+	runtime.KeepAlive(csectorIdAllocMap)
+	runtime.KeepAlive(sealedSectorPath)
+	runtime.KeepAlive(csealedSectorPathAllocMap)
+	runtime.KeepAlive(stagedSectorPath)
+	runtime.KeepAlive(cstagedSectorPathAllocMap)
+	runtime.KeepAlive(cacheDirPath)
+	runtime.KeepAlive(ccacheDirPathAllocMap)
+	runtime.KeepAlive(cregisteredProofAllocMap)
+	__v := NewFilSealPreCommitPhase1ResponseRef(unsafe.Pointer(__ret))
+	return __v
+}
