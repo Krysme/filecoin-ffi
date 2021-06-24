@@ -119,8 +119,7 @@ dependencies = [
 [[package]]
 name = "bellperson"
 version = "0.14.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7edb7b07cab660137847825b90d1c88e82907689ee1e935eb2101579bc649e0a"
+source = "git+https://github.com/15012700225/my-bellman?branch=version-0.14.2#d9e22666134de7f88d695c5481efd0e2fc8d1602"
 dependencies = [
  "bincode",
  "bit-vec",

@@ -56,3 +56,7 @@ blst = ["filecoin-proofs-api/blst", "bellperson/blst", "storage-proofs-porep/bls
 blst-portable = ["bls-signatures/blst-portable", "blstrs/portable"]
 gpu = ["filecoin-proofs-api/gpu", "bellperson/gpu", "storage-proofs-porep/gpu"]
 multicore-sdr = ["storage-proofs-porep/multicore-sdr"]
+
+
+[patch.crates-io]
+bellperson = { git = "https://github.com/15012700225/my-bellman", branch = "version-0.14.2" }
