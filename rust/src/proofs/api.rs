@@ -216,8 +216,6 @@ pub unsafe extern "C" fn fil_seal_pre_commit_phase1_tree(
         let public_pieces: Vec<PieceInfo> =
             slice.to_vec().iter().cloned().map(Into::into).collect();
 
-        let mut response: fil_SealPreCommitPhase1Response = Default::default();
-
         let result = seal_pre_commit_phase1_tree(
             registered_proof.into(),
             c_str_to_pbuf(cache_dir_path),
@@ -232,20 +230,32 @@ pub unsafe extern "C" fn fil_seal_pre_commit_phase1_tree(
 
         match result {
             Ok(output) => {
-                response.status_code = FCPResponseStatus::FCPNoError;
-                response.seal_pre_commit_phase1_output_ptr = output.as_ptr();
-                response.seal_pre_commit_phase1_output_len = output.len();
+                let response = fil_SealPreCommitPhase1Response {
+                    status_code: FCPResponseStatus::FCPNoError,
+                    error_msg: std::ptr::null(),
+                    seal_pre_commit_phase1_output_ptr: output.as_ptr(),
+                    seal_pre_commit_phase1_output_len: output.len(),
+                };
                 mem::forget(output);
+                info!("seal_pre_commit_phase1: finish");
+                raw_ptr(response)
             }
             Err(err) => {
-                response.status_code = FCPResponseStatus::FCPUnclassifiedError;
-                response.error_msg = rust_str_to_c_str(format!("{:?}", err));
+                info!(
+                    "seal_pre_commit_phase1: error\n:{}\nBacktrace:\n{}",
+                    err,
+                    err.backtrace()
+                );
+
+                let response = fil_SealPreCommitPhase1Response {
+                    error_msg: rust_str_to_c_str(format!("{:?}", err)),
+                    status_code: FCPResponseStatus::FCPUnclassifiedError,
+                    seal_pre_commit_phase1_output_ptr: std::ptr::null(),
+                    seal_pre_commit_phase1_output_len: 0,
+                };
+                raw_ptr(response)
             }
         }
-
-        info!("seal_pre_commit_phase1: finish");
-
-        raw_ptr(response)
     })
 }
 
