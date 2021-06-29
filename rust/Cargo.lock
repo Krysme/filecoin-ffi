@@ -852,6 +852,7 @@ name = "filecoin-proofs"
 version = "8.0.2"
 dependencies = [
  "anyhow",
+ "backtrace",
  "bellperson",
  "bincode",
  "bitvec",
@@ -1074,9 +1075,9 @@ dependencies = [
 
 [[package]]
 name = "hermit-abi"
-version = "0.1.18"
+version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "322f4de77956e22ed0e5032c359a0f1273f1f7f0d79bfa3b8ffbc730d7fbcc5c"
+checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
 dependencies = [
  "libc",
 ]
@@ -1241,7 +1242,7 @@ dependencies = [
 [[package]]
 name = "merkletree"
 version = "0.21.0"
-source = "git+https://github.com/Krysme/merkletree#3e973639c5b75bb5a6540059dee2d9dc76f7d241"
+source = "git+https://github.com/Krysme/merkletree#3bb48a71589155560db9295cfa124bd81b22d018"
 dependencies = [
  "anyhow",
  "arrayref",
