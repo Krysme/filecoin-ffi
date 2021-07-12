@@ -155,10 +155,6 @@ build_from_source() {
         gpu_flags=""
     fi
     # Default to use multicore_sdr flags, unless specified to disable
-    use_multicore_sdr="--features multicore-sdr"
-    if [ "${FFI_USE_MULTICORE_SDR}" == "0" ]; then
-        use_multicore_sdr=""
-    fi
 
     # Add feature specific rust flags as needed here.
     if [ "${FFI_USE_BLST_PORTABLE}" == "1" ]; then
