@@ -50,12 +50,11 @@ cbindgen = "= 0.14.0"
 tempfile = "3.0.8"
 
 [features]
-default = ["pairing", "gpu", "multicore-sdr" ]
+default = ["pairing", "gpu"]
 pairing = ["filecoin-proofs-api/pairing", "bellperson/pairing", "storage-proofs-porep/pairing"]
 blst = ["filecoin-proofs-api/blst", "bellperson/blst", "storage-proofs-porep/blst"]
 blst-portable = ["bls-signatures/blst-portable", "blstrs/portable"]
 gpu = ["filecoin-proofs-api/gpu", "bellperson/gpu", "storage-proofs-porep/gpu"]
-multicore-sdr = ["storage-proofs-porep/multicore-sdr"]
 
 
 [patch.crates-io]
