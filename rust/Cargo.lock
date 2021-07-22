@@ -296,6 +296,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "build-info"
+version = "0.1.0"
+source = "git+https://github.com/Krysme/build-info?branch=master#03c4ae5c45691d5321771beafe1f6866e8863b65"
+dependencies = [
+ "quote 1.0.9",
+]
+
+[[package]]
 name = "byte-slice-cast"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -810,6 +818,7 @@ dependencies = [
  "bellperson",
  "bls-signatures",
  "blstrs",
+ "build-info",
  "byteorder 1.4.3",
  "cbindgen",
  "drop_struct_macro_derive",

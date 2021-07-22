@@ -710,6 +710,14 @@ func GetGPUDevices() ([]string, error) {
 	return out, nil
 }
 
+func GetBuildMachineCpu() string {
+	resp := generated.FilCpu()
+	resp.Deref()
+	defer generated.FilDestroyStringResponse(resp)
+
+	return generated.RawString(resp.StringVal).Copy()
+}
+
 func GetRustFfiVersion() string {
 	resp := generated.FilRustFfiGitVersion()
 	resp.Deref()

@@ -17,6 +17,7 @@ publish = false
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
+build-info = { git = "https://github.com/Krysme/build-info", branch = "master" }
 git-version = "*"
 sha2 = "*"
 hex = "*"

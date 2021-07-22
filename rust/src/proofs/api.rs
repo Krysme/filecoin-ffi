@@ -1866,6 +1866,20 @@ pub extern "C" fn fil_rust_fil_proof_version() -> *mut fil_StringResponse {
     raw_ptr(response)
 }
 
+#[no_mangle]
+pub extern "C" fn fil_cpu() -> *mut fil_StringResponse {
+    let mut response = fil_StringResponse::default();
+
+    let raw = CString::new(build_info::cpu!())
+        .unwrap_or_default()
+        .into_raw();
+
+    response.string_val = raw;
+    response.status_code = FCPResponseStatus::FCPNoError;
+
+    raw_ptr(response)
+}
+
 #[cfg(test)]
 pub mod tests {
     use std::fs::remove_file;

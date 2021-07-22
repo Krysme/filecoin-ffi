@@ -836,6 +836,97 @@ func (x *FilClearCacheResponse) Deref() {
 	x.StatusCode = (FCPResponseStatus)(x.refa9a80400.status_code)
 }
 
+// allocFilStringResponseMemory allocates memory for type C.fil_StringResponse in C.
+// The caller is responsible for freeing the this memory via C.free.
+func allocFilStringResponseMemory(n int) unsafe.Pointer {
+	mem, err := C.calloc(C.size_t(n), (C.size_t)(sizeOfFilStringResponseValue))
+	if mem == nil {
+		panic(fmt.Sprintln("memory alloc error: ", err))
+	}
+	return mem
+}
+
+const sizeOfFilStringResponseValue = unsafe.Sizeof([1]C.fil_StringResponse{})
+
+// Ref returns the underlying reference to C object or nil if struct is nil.
+func (x *FilStringResponse) Ref() *C.fil_StringResponse {
+	if x == nil {
+		return nil
+	}
+	return x.ref4f413043
+}
+
+// Free invokes alloc map's free mechanism that cleanups any allocated memory using C free.
+// Does nothing if struct is nil or has no allocation map.
+func (x *FilStringResponse) Free() {
+	if x != nil && x.allocs4f413043 != nil {
+		x.allocs4f413043.(*cgoAllocMap).Free()
+		x.ref4f413043 = nil
+	}
+}
+
+// NewFilStringResponseRef creates a new wrapper struct with underlying reference set to the original C object.
+// Returns nil if the provided pointer to C object is nil too.
+func NewFilStringResponseRef(ref unsafe.Pointer) *FilStringResponse {
+	if ref == nil {
+		return nil
+	}
+	obj := new(FilStringResponse)
+	obj.ref4f413043 = (*C.fil_StringResponse)(unsafe.Pointer(ref))
+	return obj
+}
+
+// PassRef returns the underlying C object, otherwise it will allocate one and set its values
+// from this wrapping struct, counting allocations into an allocation map.
+func (x *FilStringResponse) PassRef() (*C.fil_StringResponse, *cgoAllocMap) {
+	if x == nil {
+		return nil, nil
+	} else if x.ref4f413043 != nil {
+		return x.ref4f413043, nil
+	}
+	mem4f413043 := allocFilStringResponseMemory(1)
+	ref4f413043 := (*C.fil_StringResponse)(mem4f413043)
+	allocs4f413043 := new(cgoAllocMap)
+	allocs4f413043.Add(mem4f413043)
+
+	var cstatus_code_allocs *cgoAllocMap
+	ref4f413043.status_code, cstatus_code_allocs = (C.FCPResponseStatus)(x.StatusCode), cgoAllocsUnknown
+	allocs4f413043.Borrow(cstatus_code_allocs)
+
+	var cerror_msg_allocs *cgoAllocMap
+	ref4f413043.error_msg, cerror_msg_allocs = unpackPCharString(x.ErrorMsg)
+	allocs4f413043.Borrow(cerror_msg_allocs)
+
+	var cstring_val_allocs *cgoAllocMap
+	ref4f413043.string_val, cstring_val_allocs = unpackPCharString(x.StringVal)
+	allocs4f413043.Borrow(cstring_val_allocs)
+
+	x.ref4f413043 = ref4f413043
+	x.allocs4f413043 = allocs4f413043
+	return ref4f413043, allocs4f413043
+
+}
+
+// PassValue does the same as PassRef except that it will try to dereference the returned pointer.
+func (x FilStringResponse) PassValue() (C.fil_StringResponse, *cgoAllocMap) {
+	if x.ref4f413043 != nil {
+		return *x.ref4f413043, nil
+	}
+	ref, allocs := x.PassRef()
+	return *ref, allocs
+}
+
+// Deref uses the underlying reference to C object and fills the wrapping struct with values.
+// Do not forget to call this method whether you get a struct for C object and want to read its values.
+func (x *FilStringResponse) Deref() {
+	if x.ref4f413043 == nil {
+		return
+	}
+	x.StatusCode = (FCPResponseStatus)(x.ref4f413043.status_code)
+	x.ErrorMsg = packPCharString(x.ref4f413043.error_msg)
+	x.StringVal = packPCharString(x.ref4f413043.string_val)
+}
+
 // allocFilZeroSignatureResponseMemory allocates memory for type C.fil_ZeroSignatureResponse in C.
 // The caller is responsible for freeing the this memory via C.free.
 func allocFilZeroSignatureResponseMemory(n int) unsafe.Pointer {
@@ -3150,97 +3241,6 @@ func (x *FilSealPreCommitPhase2Response) Deref() {
 	x.RegisteredProof = (FilRegisteredSealProof)(x.ref2aa6831d.registered_proof)
 	x.CommD = *(*[32]byte)(unsafe.Pointer(&x.ref2aa6831d.comm_d))
 	x.CommR = *(*[32]byte)(unsafe.Pointer(&x.ref2aa6831d.comm_r))
-}
-
-// allocFilStringResponseMemory allocates memory for type C.fil_StringResponse in C.
-// The caller is responsible for freeing the this memory via C.free.
-func allocFilStringResponseMemory(n int) unsafe.Pointer {
-	mem, err := C.calloc(C.size_t(n), (C.size_t)(sizeOfFilStringResponseValue))
-	if mem == nil {
-		panic(fmt.Sprintln("memory alloc error: ", err))
-	}
-	return mem
-}
-
-const sizeOfFilStringResponseValue = unsafe.Sizeof([1]C.fil_StringResponse{})
-
-// Ref returns the underlying reference to C object or nil if struct is nil.
-func (x *FilStringResponse) Ref() *C.fil_StringResponse {
-	if x == nil {
-		return nil
-	}
-	return x.ref4f413043
-}
-
-// Free invokes alloc map's free mechanism that cleanups any allocated memory using C free.
-// Does nothing if struct is nil or has no allocation map.
-func (x *FilStringResponse) Free() {
-	if x != nil && x.allocs4f413043 != nil {
-		x.allocs4f413043.(*cgoAllocMap).Free()
-		x.ref4f413043 = nil
-	}
-}
-
-// NewFilStringResponseRef creates a new wrapper struct with underlying reference set to the original C object.
-// Returns nil if the provided pointer to C object is nil too.
-func NewFilStringResponseRef(ref unsafe.Pointer) *FilStringResponse {
-	if ref == nil {
-		return nil
-	}
-	obj := new(FilStringResponse)
-	obj.ref4f413043 = (*C.fil_StringResponse)(unsafe.Pointer(ref))
-	return obj
-}
-
-// PassRef returns the underlying C object, otherwise it will allocate one and set its values
-// from this wrapping struct, counting allocations into an allocation map.
-func (x *FilStringResponse) PassRef() (*C.fil_StringResponse, *cgoAllocMap) {
-	if x == nil {
-		return nil, nil
-	} else if x.ref4f413043 != nil {
-		return x.ref4f413043, nil
-	}
-	mem4f413043 := allocFilStringResponseMemory(1)
-	ref4f413043 := (*C.fil_StringResponse)(mem4f413043)
-	allocs4f413043 := new(cgoAllocMap)
-	allocs4f413043.Add(mem4f413043)
-
-	var cstatus_code_allocs *cgoAllocMap
-	ref4f413043.status_code, cstatus_code_allocs = (C.FCPResponseStatus)(x.StatusCode), cgoAllocsUnknown
-	allocs4f413043.Borrow(cstatus_code_allocs)
-
-	var cerror_msg_allocs *cgoAllocMap
-	ref4f413043.error_msg, cerror_msg_allocs = unpackPCharString(x.ErrorMsg)
-	allocs4f413043.Borrow(cerror_msg_allocs)
-
-	var cstring_val_allocs *cgoAllocMap
-	ref4f413043.string_val, cstring_val_allocs = unpackPCharString(x.StringVal)
-	allocs4f413043.Borrow(cstring_val_allocs)
-
-	x.ref4f413043 = ref4f413043
-	x.allocs4f413043 = allocs4f413043
-	return ref4f413043, allocs4f413043
-
-}
-
-// PassValue does the same as PassRef except that it will try to dereference the returned pointer.
-func (x FilStringResponse) PassValue() (C.fil_StringResponse, *cgoAllocMap) {
-	if x.ref4f413043 != nil {
-		return *x.ref4f413043, nil
-	}
-	ref, allocs := x.PassRef()
-	return *ref, allocs
-}
-
-// Deref uses the underlying reference to C object and fills the wrapping struct with values.
-// Do not forget to call this method whether you get a struct for C object and want to read its values.
-func (x *FilStringResponse) Deref() {
-	if x.ref4f413043 == nil {
-		return
-	}
-	x.StatusCode = (FCPResponseStatus)(x.ref4f413043.status_code)
-	x.ErrorMsg = packPCharString(x.ref4f413043.error_msg)
-	x.StringVal = packPCharString(x.ref4f413043.string_val)
 }
 
 // allocFilUnsealRangeResponseMemory allocates memory for type C.fil_UnsealRangeResponse in C.
