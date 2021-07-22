@@ -710,6 +710,31 @@ func GetGPUDevices() ([]string, error) {
 	return out, nil
 }
 
+func GetRustFfiVersion() string {
+	resp := generated.FilRustFfiGitVersion()
+	resp.Deref()
+	defer generated.FilDestroyStringResponse(resp)
+
+	return generated.RawString(resp.StringVal).Copy()
+}
+
+func GetRustFilProofsApiVersion() string {
+	resp := generated.FilRustFilProofsApiVersion()
+	resp.Deref()
+	defer generated.FilDestroyStringResponse(resp)
+
+	return generated.RawString(resp.StringVal).Copy()
+}
+
+func GetRustFilProofVersion() string {
+	resp := generated.FilRustFilProofVersion()
+	resp.Deref()
+	defer generated.FilDestroyStringResponse(resp)
+
+	return generated.RawString(resp.StringVal).Copy()
+}
+
+
 // GetSealVersion
 func GetSealVersion(proofType abi.RegisteredSealProof) (string, error) {
 	sp, err := toFilRegisteredSealProof(proofType)

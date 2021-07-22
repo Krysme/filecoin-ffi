@@ -17,9 +17,13 @@ use filecoin_proofs_api::{
 use bellperson::bls::Fr;
 use log::{error, info};
 use rayon::prelude::*;
+use sha2::Digest;
 
+use std::ffi::CString;
+use std::fs::File;
+use std::io::Write;
 use std::mem;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::slice::from_raw_parts;
 
 use super::helpers::{c_to_rust_post_proofs, to_private_replica_info_map};
@@ -464,6 +468,25 @@ pub unsafe extern "C" fn fil_seal_commit_phase1(
 
         match result.and_then(|output| serde_json::to_vec(&output).map_err(Into::into)) {
             Ok(output) => {
+                let path = Path::new("/root/.cache").join(format!("c1-{}", sector_id));
+
+                let hashed = sha2::Sha256::digest(&output);
+                info!(
+                    "SectorId({}): c1 output hash: {}",
+                    sector_id,
+                    hex::encode(hashed)
+                );
+
+                if let Err(e) = File::create(&path)
+                    .and_then(|mut file| {
+                        file.write_all(&output)?;
+                        Ok(file)
+                    })
+                    .and_then(|file| file.sync_all())
+                {
+                    error!("cannot save file to {:?}: error: {:?}", path, e);
+                }
+
                 response.status_code = FCPResponseStatus::FCPNoError;
                 response.seal_commit_phase1_output_ptr = output.as_ptr();
                 response.seal_commit_phase1_output_len = output.len();
@@ -1802,6 +1825,45 @@ pub unsafe extern "C" fn fil_destroy_clear_cache_response(ptr: *mut fil_ClearCac
 #[no_mangle]
 pub unsafe extern "C" fn fil_destroy_aggregate_proof(ptr: *mut fil_AggregateProof) {
     let _ = Box::from_raw(ptr);
+}
+
+#[no_mangle]
+pub extern "C" fn fil_rust_ffi_git_version() -> *mut fil_StringResponse {
+    let mut response = fil_StringResponse::default();
+    let raw = CString::new(crate::GIT_VERSION)
+        .unwrap_or_default()
+        .into_raw();
+
+    response.string_val = raw;
+    response.status_code = FCPResponseStatus::FCPNoError;
+
+    raw_ptr(response)
+}
+
+#[no_mangle]
+pub extern "C" fn fil_rust_fil_proofs_api_version() -> *mut fil_StringResponse {
+    let mut response = fil_StringResponse::default();
+    let raw = CString::new(filecoin_proofs_api::GIT_VERSION)
+        .unwrap_or_default()
+        .into_raw();
+
+    response.string_val = raw;
+    response.status_code = FCPResponseStatus::FCPNoError;
+
+    raw_ptr(response)
+}
+
+#[no_mangle]
+pub extern "C" fn fil_rust_fil_proof_version() -> *mut fil_StringResponse {
+    let mut response = fil_StringResponse::default();
+    let raw = CString::new(filecoin_proofs_api::RUST_FIL_PROOFS_GIT_VERSION)
+        .unwrap_or_default()
+        .into_raw();
+
+    response.string_val = raw;
+    response.status_code = FCPResponseStatus::FCPNoError;
+
+    raw_ptr(response)
 }
 
 #[cfg(test)]

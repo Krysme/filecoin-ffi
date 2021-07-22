@@ -53,3 +53,23 @@ code_and_message_impl!(fil_InitLogFdResponse);
 pub unsafe extern "C" fn fil_destroy_init_log_fd_response(ptr: *mut fil_InitLogFdResponse) {
     let _ = Box::from_raw(ptr);
 }
+
+#[repr(C)]
+#[derive(DropStructMacro)]
+pub struct fil_SealCommitPhase1Response {
+    pub status_code: FCPResponseStatus,
+    pub error_msg: *const libc::c_char,
+    pub seal_commit_phase1_output_ptr: *const u8,
+    pub seal_commit_phase1_output_len: libc::size_t,
+}
+
+impl Default for fil_SealCommitPhase1Response {
+    fn default() -> Self {
+        Self {
+            status_code: FCPResponseStatus::FCPNoError,
+            error_msg: ptr::null(),
+            seal_commit_phase1_output_ptr: ptr::null(),
+            seal_commit_phase1_output_len: 0,
+        }
+    }
+}
